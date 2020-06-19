@@ -16,6 +16,7 @@
 
 package com.example;
 
+import com.example.entities.Evento;
 import com.google.actions.api.ActionRequest;
 import com.google.actions.api.ActionResponse;
 import com.google.actions.api.DialogflowApp;
@@ -24,8 +25,14 @@ import com.google.actions.api.response.ResponseBuilder;
 import com.google.api.services.actions_fulfillment.v2.model.User;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 /**
  * Implements all intent handlers for this Action. Note that your App must extend from DialogflowApp
@@ -35,31 +42,18 @@ public class MyActionsApp extends DialogflowApp {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MyActionsApp.class);
 
-  @ForIntent("Default Welcome Intent")
-  public ActionResponse welcome(ActionRequest request) {
-    LOGGER.info("Welcome intent start.");
+  Client client = ClientBuilder.newClient();
+
+
+
+  @ForIntent("Eventos")
+  public ActionResponse evento(ActionRequest request) {
+    
     ResponseBuilder responseBuilder = getResponseBuilder(request);
-    ResourceBundle rb = ResourceBundle.getBundle("resources");
-    User user = request.getUser();
 
-    if (user != null && user.getLastSeen() != null) {
-      responseBuilder.add(rb.getString("welcome_back"));
-    } else {
-      responseBuilder.add(rb.getString("welcome"));
-    }
-
-    LOGGER.info("Welcome intent end.");
+    String response = "Las fechas para la entrega de la ficha de inscripcion es del 5/6/2020 al 29/06/2020 en el Departamento de Proyeccion Social";
+    responseBuilder.add(response).endConversation();
     return responseBuilder.build();
   }
-
-  @ForIntent("bye")
-  public ActionResponse bye(ActionRequest request) {
-    LOGGER.info("Bye intent start.");
-    ResponseBuilder responseBuilder = getResponseBuilder(request);
-    ResourceBundle rb = ResourceBundle.getBundle("resources");
-
-    responseBuilder.add(rb.getString("bye")).endConversation();
-    LOGGER.info("Bye intent end.");
-    return responseBuilder.build();
-  }
+ 
 }
